@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
+import javax.swing.JOptionPane;
 
 public class DaoUser {
 
@@ -91,6 +92,7 @@ public class DaoUser {
             ps.setString(4, user.getPhone());
 
             ps.executeUpdate();
+            JOptionPane.showMessageDialog( null, "Saved Data" );
 
         } catch (SQLException e) {
             System.out.println(e);
@@ -100,19 +102,20 @@ public class DaoUser {
 
     }
 
-    public void updateUser(String id, String name, String lastname, String email, String phone) {
+    public void updateUser(User user) {
 
         this.query = "UPDATE user SET name = ?, lastname = ?, email = ?, phone = ? WHERE id = ?";
 
         try {
             PreparedStatement inst = db.connection().prepareStatement(query);
-            inst.setString(1, name);
-            inst.setString(2, lastname);
-            inst.setString(3, email);
-            inst.setString(4, phone);
-            inst.setString(5, id);
+            inst.setString(1, user.getName());
+            inst.setString(2, user.getLastname());
+            inst.setString(3, user.getEmail());
+            inst.setString(4, user.getPhone());
+            inst.setInt(5, user.getId());
 
             inst.executeUpdate();
+            JOptionPane.showMessageDialog( null, "Updated Data" );
 
         } catch (SQLException e) {
             System.out.println(e);
@@ -120,24 +123,7 @@ public class DaoUser {
             System.out.println(ex.toString());
         }
     }
-
-    public void updateUserBalance(String iduser, String balanceuser) {
-
-        this.query = "UPDATE user SET balanceuser = ? WHERE iduser = ?;";
-
-        try {
-            PreparedStatement ps = db.connection().prepareStatement(query);
-            ps.setString(1, balanceuser);
-            ps.setString(2, iduser);
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            System.out.println(e);
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
-        }
-    }
-
+    
     public void deleteUser(String id) {
 
         this.query = "DELETE FROM user WHERE id = ?;";
@@ -146,6 +132,7 @@ public class DaoUser {
             PreparedStatement inst = db.connection().prepareStatement(query);
             inst.setString(1, id);
             inst.executeUpdate();
+            JOptionPane.showMessageDialog( null, "Deleted Data" );
 
         } catch (SQLException e) {
             System.out.println(e);

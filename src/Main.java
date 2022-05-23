@@ -1,15 +1,19 @@
 
 import Model.User;
 import Persistence.DaoUser;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
 
 /* @author Audiovisuales */
 public class Main extends javax.swing.JFrame {
 
-    DaoUser dao = null;
-    
+    DaoUser dao;
+    DefaultTableModel tableModel;
+
     public Main() {
-        initComponents();
         this.dao = new DaoUser();
+        initComponents();
+        UpdateTable();
     }
 
     @SuppressWarnings("unchecked")
@@ -42,10 +46,7 @@ public class Main extends javax.swing.JFrame {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "ID", "Name", "Last Name", "Email", "Phone"
@@ -186,16 +187,15 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 0, Short.MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -287,23 +287,81 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTextField txtPhone;
     // End of variables declaration//GEN-END:variables
 
+    private void UpdateTable() {
+
+        this.tableModel = (DefaultTableModel) table.getModel();
+        ArrayList<User> list = this.dao.listUser();
+
+        for (int i = 0; i < list.size(); i++) {
+            tableModel.addRow(new Object[]{
+                list.get(i).getId(),
+                list.get(i).getName(),
+                list.get(i).getLastname(),
+                list.get(i).getEmail(),
+                list.get(i).getPhone()
+            });
+        }
+    }
+
     private void save() {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        dao.newUser(new User(
-                txtName.getText(),
-                txtName.getText(),
-                "juan@correo.com",
-                "12346579"
-        ));
+        try {
+            validateData();
+
+            dao.newUser(new User(
+                    txtName.getText(),
+                    txtLastName.getText(),
+                    txtEmail.getText(),
+                    txtPhone.getText()
+            ));
+
+            cleanFields();
+            UpdateTable();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     private void update() {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            this.dao.updateUser(new User(
+                    Integer.parseInt(txtID.getText()),
+                    txtName.getText(),
+                    txtLastName.getText(),
+                    txtEmail.getText(),
+                    txtPhone.getText()
+            ));
 
+            cleanFields();
+            UpdateTable();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     private void delete() {
-        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            this.dao.deleteUser(txtID.getText());
+            cleanFields();
+            UpdateTable();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
 
+    private void cleanFields() {
+        txtID.setText("");
+        txtName.setText("");
+        lbAlert.setText(" ");
+        txtEmail.setText("");
+        txtPhone.setText("");
+        txtLastName.setText("");
+    }
+
+    private void validateData() {
+        try {
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 }

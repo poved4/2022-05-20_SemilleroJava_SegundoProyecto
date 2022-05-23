@@ -6,7 +6,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /*
-    video = https://www.youtube.com/watch?v=u9uUFyC9b80
     db = cruddb
     table = user
         columns = id, name, lastname, email, phone
